@@ -5,19 +5,52 @@ Skills distilled from an analysis of ~252 real Claude Code sessions / ~2,700 pro
 git worktrees, two technical book projects, and assorted side projects). Each skill puts
 one empirically successful prompting technique on rails.
 
+## The skills
+
+| Skill | One-liner |
+|---|---|
+| **`sharpen`** | The entry point. Upgrades a rough ask into the high-success shape — exemplar anchor, scope bounds, acceptance criteria, banned shortcuts, verification plan — before any code is written. |
+| **`loop-author`** | Hardens an autonomous run (/loop, /goal, "keep going until") with the nine-part anatomy: work-unit discipline, spec + journal files, exit criteria, quality gates, standing rules, pacing. Includes a full template. |
+| **`rca`** | Diagnose-before-fix rails: mechanism + primary evidence + repro test, go/no-go before implementing, banned band-aid fixes, and method-switching when stuck. |
+| **`design-options`** | Bounded, numbered decision memos (default top 3 + why + recommendation) instead of open-ended exploration or premature code. |
+| **`find-exemplar`** | Find the sibling implementation to mirror before designing anything; switch to exemplar-hunting immediately when an approach gets rejected as hacky/wrong-layer. |
+| **`handoff`** | A paste-ready block (problem, root cause, decisions, standing rules, state, next steps, key files) so a fresh session resumes with zero scope loss. |
+| **`persist-rule`** | Converts repeated corrections and "always/never" preferences into durable artifacts — lint rule > test > CLAUDE.md > skill > loop standing-rules — instead of session memories. |
+
 ## Install
 
+The repo is [`npx skills`](https://skills.sh)-compatible: each skill is a top-level
+directory with a `SKILL.md`.
+
 ```bash
+# interactive: pick skills and detected harnesses
 npx skills add calvin-archastro/skills
+
+# everything, into every detected harness, no prompts
+npx skills add calvin-archastro/skills --all
+
+# user-level (global) instead of project-level
+npx skills add calvin-archastro/skills --all -g
+
+# specific skills / specific harnesses
+npx skills add calvin-archastro/skills -s sharpen -s loop-author -a claude-code
+npx skills add calvin-archastro/skills -s '*' -a codex -a cursor
 ```
 
-Or symlink the ones you want into your personal skills directory:
+The CLI installs to whichever harnesses it detects — Claude Code, Codex, Cursor, opencode,
+Gemini CLI, Amp, Cline, Roo, Windsurf, Zed, Goose, Droid, and others. Use `--copy` if you
+prefer real files over symlinks.
+
+### Manual (Claude Code, no npx)
 
 ```bash
+git clone https://github.com/calvin-archastro/skills ~/projects/skills
 for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule; do
-  ln -sfn "$(pwd)/$s" ~/.claude/skills/$s
+  ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
+
+For project-scoped installs, symlink into `.claude/skills/` inside the repo instead.
 
 ## What the transcript analysis found
 
