@@ -55,6 +55,38 @@ being the thing whose absence broke a real loop.
    here, the opposite of interactive prompting.
 3. Show it to the user for launch, or launch it if they've already said to.
 
+## Template — a hardened loop prompt with all nine parts
+
+```
+/loop Work through the tasks in @docs/specs/2026-07-05-export-pipeline-tasks.md, one task
+per loop iteration, in order. Journal each iteration to docs/journals/export-pipeline.md
+(what you did, decisions made, how to use the feature, gotchas). Check the task off in the
+spec file when done. One commit per task, informative message.
+
+QUALITY GATES per iteration: build + typecheck green, lint clean, focused tests for the
+task, one e2e test exercising the feature end to end, smoke the running app via the
+project's dev skill. For schema or concurrency changes, run an unbiased subagent review —
+no blocking findings.
+
+DESIGN VALUES: reuse existing pipelines rather than standing up parallel paths; most
+problems are incomplete abstractions or missing edge cases — fix the abstraction, don't
+patch call sites; keep files under the size cap.
+
+STANDING RULES (fold my mid-run corrections into this block): never fix an authorization
+failure by escalating the caller's privileges; no error-string matching — use error codes;
+no test-file edits to make checks pass; never amend pushed commits.
+
+AGREED DECISIONS (do not reopen): storage is JSONL, not sqlite (revisit only past 1M rows);
+the CLI verb is `export`, not `dump`.
+
+PACING: work continuously through the backlog — do not sleep between tasks; pause only when
+blocked on a user decision, and say exactly what you need.
+
+EXIT when every task is checked off, all gates are green on the final commit, and the
+journal has a closing summary. RESUME STATE: DONE T01–T04; NOW DO T05 (retry queue — follow
+the pattern from T03's commit).
+```
+
 ## Known failure modes to design against
 
 - **No journal → amnesia** between iterations and after /clear.

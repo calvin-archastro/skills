@@ -31,6 +31,26 @@ Produce ONE fenced markdown block (so it copies clean) containing, in order:
    ("NOW DO: …" with the exact file/pattern pointers), not "continue the work".
 7. **Key files** — the 5–10 paths that matter, each with a phrase on why.
 
+## Example block
+
+````
+```
+PROBLEM: bulk export 500s for non-admin members. Original error:
+`PermissionError: CanRead violated for Export (member m_412)` from POST /api/exports.
+ROOT CAUSE: export controller checks the *requester* against the org policy, but the rows
+are fetched with the *job owner's* scope (export_controller.ts:88 vs job_runner.ts:203).
+AGREED DECISIONS: fix at the controller (single enforcement point); rejected widening the
+job runner's scope (would grant more than the requester is entitled to).
+STANDING RULES: no privilege escalation to make reads pass; one PR per concern.
+STATE: branch fix/export-authz, PR #412 open, CI green except the new repro test
+(intentionally failing); controller change uncommitted in working tree.
+NEXT: 1) make repro green by threading requester scope into fetch (see how list_exports
+does it — same pattern), 2) e2e test for member-vs-admin, 3) push, re-request review.
+KEY FILES: export_controller.ts (enforcement), job_runner.ts:203 (scope bug),
+exports.e2e.ts (add case here), policies/export.ts (policy definitions).
+```
+````
+
 ## Rules
 
 - Write for a reader with zero context — no session-local shorthand ("option B", "the second

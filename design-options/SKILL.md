@@ -32,6 +32,27 @@ exploration until the user killed it with nothing delivered.
    an added constraint ("do 1 — make sure tests repro this scenario first"), that constraint
    becomes part of the acceptance criteria.
 
+## Example memo
+
+```
+Realtime sync for the settings panel — 3 options:
+
+1. Extend the existing poller (sync/poller.ts) — smallest change, one code path stays.
+   Tradeoff: latency stays at the 30s interval. ~0.5 day.
+2. Push over the event bus we already run for audit events (bus/consumer.ts) — realtime,
+   reuses delivery guarantees we've already hardened. Tradeoff: new topic + a backfill
+   story for reconnects. ~2 days.
+3. Dedicated webhook receiver — most flexible for third parties later. Tradeoff: a new
+   surface to secure and deploy, and it duplicates what the bus already gives us. ~4 days.
+
+Recommendation: 2 — realtime without a new surface; 3 is 1 mostly re-solved by existing infra.
+(Checked: nothing existing already pushes settings changes — the audit topic carries only
+mutations, not reads, so option 2 needs the new topic either way.)
+```
+
+The last parenthetical matters: it pre-answers "doesn't X already do this?" — the question
+that killed redundant designs twice in the transcripts.
+
 ## Contrast pair from the transcripts
 
 - Worked: "suggest 3 things we could do to really improve the language/debugging experience…

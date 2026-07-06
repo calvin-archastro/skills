@@ -48,6 +48,25 @@ from the repo and conversation yourself first — do not offload research to the
 - On approval (or if nothing needed asking), execute against the spec. Treat the acceptance
   criteria as your own exit checklist and report against them at the end.
 
+## Worked example
+
+Rough ask: *"add an upgrades page to the dashboard"*
+
+```
+GOAL: dashboard page listing installed packages with pending upgrades, bulk-upgrade per group.
+EXEMPLAR: mirror the integrations list page (same table primitives, filters, row actions).
+  The existing per-item upgrade card already computes the version diff — reuse its logic,
+  do not reimplement the comparison.
+SCOPE: UI + one list endpoint. Don't touch the upgrade executor. One PR.
+ACCEPTANCE: url /dashboard/upgrades; rows grouped by package; bulk button per group;
+  seeded fixtures with 2 packages → 2 groups shown.
+BANNED: no parallel version-diff implementation; no back-compat shims (nothing links here yet).
+VERIFICATION: e2e test on the seeded fixtures + screenshot of the rendered page.
+```
+
+Two sentences of ask became six checkable lines — and the exemplar line alone is what
+prevents the wrong-feature build observed in the transcripts.
+
 ## Anti-patterns this replaces
 
 - Long prose specs with no exemplar → wrong build despite the detail volume; fixed only by

@@ -52,3 +52,16 @@ changing the investigation method.
 Root cause (mechanism + evidence) → repro (test or experiment) → proposed fix with layer
 justification → what verification will prove it. Then wait for go/no-go unless the user
 already said to fix it — and even then, lead the final report with the mechanism.
+
+### Example
+
+```
+ROOT CAUSE: retries duplicate because the worker's dedupe key includes the enqueue
+timestamp — every retry looks "new" and the original is never cancelled (worker.ts:141).
+Evidence: 3 active rows for job 8123 in staging; log lines attached.
+REPRO: failing test added — enqueue, fail once, retry → asserts one active row (currently 2).
+FIX (proposed): dedupe on (queue, payload_hash) at the enqueue layer. A cleanup sweep would
+patch the symptom at the wrong layer — the duplicates would still race before each sweep.
+VERIFICATION: repro test green + 1h staging soak with zero duplicate active rows.
+Go/no-go?
+```

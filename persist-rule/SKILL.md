@@ -38,6 +38,22 @@ prior session, regressed silently later.
 5. **Cite the rule when it binds.** In later work, name the constraint you're honoring
    ("keeping this under the 500-line cap → splitting the module") so drift is visible.
 
+## Worked example
+
+User (after a violation): *"why did you amend?? never amend"*
+
+Same turn, alongside the apology/fix:
+
+1. Home: CLAUDE.md (judgment rule — not mechanically checkable).
+2. Write it:
+   ```
+   ## Git
+   - Never amend or force-push a commit that has been pushed. Add follow-up commits;
+     rebase only when explicitly asked. (Amending rewrites history reviewers have seen.)
+   ```
+3. Sweep backwards: check whether any open PR already contains an amended pushed commit.
+4. Later sessions cite it: "adding a follow-up commit rather than amending, per CLAUDE.md."
+
 ## Wording the rule
 
 State it as ban + correct alternative + one-line why — the form that worked in practice:

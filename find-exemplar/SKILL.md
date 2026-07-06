@@ -37,6 +37,16 @@ project directories", "see how the last provider was added") shipped in one pass
   Ask "which existing implementation should this mirror?" if you can't find one — that
   question is cheaper than a third wrong attempt.
 
+## What it sounds like in practice
+
+- Plan statement: *"Plan: add the webhooks page mirroring how integrations does list→detail —
+  same table primitives, same rail registration in nav.ts. Deviation: no bulk actions
+  (webhooks are singletons); calling that out now."*
+- After a rejection: *"Got it — before I produce another variant: should this mirror how
+  the sibling reference fields get rewritten, or how the installer handles it? I'll trace
+  whichever and match it exactly."* (One question like this repeatedly beat a third
+  guessed attempt.)
+
 ## Parity loops
 
 For match-the-reference work (mock HTML, design spec, prior harness), structure it as:
