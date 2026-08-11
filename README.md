@@ -16,6 +16,7 @@ one empirically successful prompting technique on rails.
 | **`find-exemplar`** | Find the sibling implementation to mirror before designing anything; switch to exemplar-hunting immediately when an approach gets rejected as hacky/wrong-layer. |
 | **`handoff`** | A paste-ready block (problem, root cause, decisions, standing rules, state, next steps, key files) so a fresh session resumes with zero scope loss. |
 | **`persist-rule`** | Converts repeated corrections and "always/never" preferences into durable artifacts — lint rule > test > CLAUDE.md > skill > loop standing-rules — instead of session memories. |
+| **`tweet-reply-review`** | Score draft/posted X posts for reply potential (6 engines /12), flag kill criteria, rewrite into a proven pattern, and seed the reply-farm. |
 
 ## Install
 
@@ -45,7 +46,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
