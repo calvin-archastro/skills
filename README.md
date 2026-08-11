@@ -17,6 +17,7 @@ one empirically successful prompting technique on rails.
 | **`handoff`** | A paste-ready block (problem, root cause, decisions, standing rules, state, next steps, key files) so a fresh session resumes with zero scope loss. |
 | **`persist-rule`** | Converts repeated corrections and "always/never" preferences into durable artifacts — lint rule > test > CLAUDE.md > skill > loop standing-rules — instead of session memories. |
 | **`tweet-reply-review`** | Score draft/posted X posts for reply potential (6 engines /12), flag kill criteria, rewrite into a proven pattern, and seed the reply-farm. |
+| **`beautify-page`** | Marketing/landing pages with anti-AI-slop craft: token plan, distinctive type/color, one signature, purposeful motion. Build, polish, or meta-prompt modes + paste-ready prompt pack. |
 
 ## Install
 
@@ -34,7 +35,7 @@ npx skills add calvin-archastro/skills --all
 npx skills add calvin-archastro/skills --all -g
 
 # specific skills / specific harnesses
-npx skills add calvin-archastro/skills -s sharpen -s loop-author -a claude-code
+npx skills add calvin-archastro/skills -s sharpen -s loop-author -s beautify-page -a claude-code
 npx skills add calvin-archastro/skills -s '*' -a codex -a cursor
 ```
 
@@ -46,7 +47,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -68,6 +69,7 @@ For project-scoped installs, symlink into `.claude/skills/` inside the repo inst
 | **Context handoff** — "summarize the problem and plan so i can clear context", paste into next session | Every observed handoff resumed cleanly with no scope loss. | `handoff` |
 | **Pasting raw evidence verbatim** — CI logs, stack traces, review comments with file:line, URLs | Uniformly successful; one pasted URL overturned a wrong in-progress fix. | folded into `sharpen`, `rca` |
 | **Tiny imperative closers** — "commit and push a pr", "ci failed" | Near-100% success — but *only* as closers on settled context. | no skill needed |
+| **Anti-slop design rails** — ban defaults (Inter/purple), plan tokens before code, one signature + orchestrated motion | Opus-era frontend aesthetics cookbook + community landing prompts; distinctive landings without generic SaaS template. | `beautify-page` |
 
 ### Anti-patterns that consistently caused friction
 
