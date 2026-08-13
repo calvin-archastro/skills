@@ -18,6 +18,7 @@ one empirically successful prompting technique on rails.
 | **`persist-rule`** | Converts repeated corrections and "always/never" preferences into durable artifacts — lint rule > test > CLAUDE.md > skill > loop standing-rules — instead of session memories. |
 | **`tweet-reply-review`** | Score draft/posted X posts for reply potential (6 engines /12), flag kill criteria, rewrite into a proven pattern, and seed the reply-farm. |
 | **`beautify-page`** | Marketing/landing pages with anti-AI-slop craft: token plan, distinctive type/color, one signature, purposeful motion. Build, polish, or meta-prompt modes + paste-ready prompt pack. |
+| **`visualize-data`** | Data → claim → chart → designed self-contained HTML. Newsroom / visual-essay / scale-poster / explainer registers, FT chart lookup, anti-dashboard slop. Research + paste prompts included. |
 
 ## Install
 
@@ -47,7 +48,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -70,6 +71,7 @@ For project-scoped installs, symlink into `.claude/skills/` inside the repo inst
 | **Pasting raw evidence verbatim** — CI logs, stack traces, review comments with file:line, URLs | Uniformly successful; one pasted URL overturned a wrong in-progress fix. | folded into `sharpen`, `rca` |
 | **Tiny imperative closers** — "commit and push a pr", "ci failed" | Near-100% success — but *only* as closers on settled context. | no skill needed |
 | **Anti-slop design rails** — ban defaults (Inter/purple), plan tokens before code, one signature + orchestrated motion | Opus-era frontend aesthetics cookbook + community landing prompts; distinctive landings without generic SaaS template. | `beautify-page` |
+| **Claim-first data pages** — quoteable sentence before SVG; chart type from a vocabulary; newsroom anatomy not dashboard chrome | Year-end viz lists + FT Visual Vocabulary + Datawrapper/OWID/Pudding craft; stops Chart.js KPI-card slop. | `visualize-data` |
 
 ### Anti-patterns that consistently caused friction
 
