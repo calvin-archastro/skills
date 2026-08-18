@@ -16,7 +16,7 @@ one empirically successful prompting technique on rails.
 | **`find-exemplar`** | Find the sibling implementation to mirror before designing anything; switch to exemplar-hunting immediately when an approach gets rejected as hacky/wrong-layer. |
 | **`handoff`** | A paste-ready block (problem, root cause, decisions, standing rules, state, next steps, key files) so a fresh session resumes with zero scope loss. |
 | **`persist-rule`** | Converts repeated corrections and "always/never" preferences into durable artifacts — lint rule > test > CLAUDE.md > skill > loop standing-rules — instead of session memories. |
-| **`tweet-reply-review`** | Score draft/posted X posts for reply potential (6 engines /12), flag kill criteria, rewrite into a proven pattern, and seed the reply-farm. |
+| **`tweet-reply-review`** | Review a draft or convert notes/essays into a tweet or thread in the author's live voice. Ranks internally, prints a plain-language call + the post. |
 | **`beautify-page`** | Marketing/landing pages with anti-AI-slop craft: token plan, distinctive type/color, one signature, purposeful motion. Build, polish, or meta-prompt modes + paste-ready prompt pack. |
 | **`visualize-data`** | Data → claim → chart → designed self-contained HTML. Newsroom / visual-essay / scale-poster / explainer registers, FT chart lookup, anti-dashboard slop. Research + paste prompts included. |
 
