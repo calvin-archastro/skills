@@ -19,6 +19,7 @@ one empirically successful prompting technique on rails.
 | **`tweet-reply-review`** | Review a draft or convert notes/essays into a tweet or thread in the author's live voice. Ranks internally, prints a plain-language call + the post. |
 | **`beautify-page`** | Marketing/landing pages with anti-AI-slop craft: token plan, distinctive type/color, one signature, purposeful motion. Build, polish, or meta-prompt modes + paste-ready prompt pack. |
 | **`visualize-data`** | Data → claim → chart → designed self-contained HTML. Newsroom / visual-essay / scale-poster / explainer registers, FT chart lookup, anti-dashboard slop. Research + paste prompts included. |
+| **`omarchy-plugin`** | Author/review/publish Omarchy Quickshell plugins: clone-a-builtin, `qs.Ui` contract, QML untrusted-content (AutoText remote images), Process/argv secrets, marketplace listing. |
 
 ## Install
 
@@ -48,7 +49,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data omarchy-plugin; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
