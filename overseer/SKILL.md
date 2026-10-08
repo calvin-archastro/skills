@@ -22,8 +22,12 @@ Reference files, read when the step needs them:
 - `references/briefs.md`: brief and message templates for subagents and panes.
 - `references/standing-rules.md`: the rule block to attach to delegated work,
   plus the escalation ladder.
-- `scripts/fleet.py`: read-only snapshot of every live session (Herdr + Claude
-  Code transcripts); `--slots` reports which standing worktrees are free.
+- `scripts/fleet.py`: read-only snapshot of every live session. It reads Claude
+  Code transcripts where they exist and the pane's screen for any other
+  harness.
+- `scripts/repo.py`: `inspect` reports what a repository normally uses
+  (default branch, agent harness, standing worktrees, PR host); `slots` says
+  which standing worktrees are free; `init-slots` creates them.
 - `scripts/clean_merged.py`: discards leftover files in a worktree that are
   already on the remote default branch, and nothing else.
 
@@ -31,10 +35,46 @@ The repository's own instruction file (CLAUDE.md, AGENTS.md) wins over this
 skill wherever the two disagree, except where the user has told you otherwise
 in their own words.
 
+Needs Herdr and git. Works with whichever agent harness the sessions run
+(Claude Code, Codex, Gemini, Cursor and the others Herdr recognises). The `gh`
+CLI is used for PR state when the remote is GitHub; without it, PR state is
+unknown and you check it another way.
+
 Private overlay: if `~/.agents/overseer.local.md` exists, read it before
-acting. It holds this user's own standing grants, repository paths and
-project rules, and it wins over the defaults here. Record a new standing rule
-from the user there, not in this file, so a reinstall does not lose it.
+acting. It wins over the defaults here. Record a new standing rule from the
+user there, not in this file, so a reinstall does not lose it. Layout:
+
+```
+## All repos
+<standing grants and preferences that hold everywhere>
+
+## Repo: <primary checkout path>
+default branch: origin/main
+harness: claude
+slots: wt1-wt9            # or: none
+<project rules that hold only in this repo>
+```
+
+Rules under `## Repo:` apply only while you oversee that repository.
+
+## 0. Start of session: set up the repository
+
+Do this once per repository, the first time you oversee it.
+
+1. `python3 <skill dir>/scripts/repo.py inspect <checkout>`. It reports the
+   default branch, the harness the sessions here run, the standing worktrees
+   that already exist, the instruction files, the PR host and the hooks path.
+   Below, `<default>` is that default branch and `<harness>` that harness.
+2. If the overlay already has a `## Repo:` section for it, use that and go on.
+3. Harness: the one most live sessions in this repo run; otherwise your own;
+   otherwise the one the repo's files point to. Ask only when those disagree.
+4. Standing slots (optional):
+   1. They exist (`<repo>-wt1`, ...): use them. No question.
+   2. None exist: ask once whether the user wants standing slots here, and how
+      many. Each is a full checkout, so say what that costs in disk. Yes:
+      `repo.py init-slots <checkout> --count N`. No: this repo uses one-off
+      worktrees only.
+5. Write the `## Repo:` section with what you found and what the user chose.
 
 ## 1. What you own, and what stays the user's
 
@@ -169,15 +209,16 @@ herdr agent wait <pane> --timeout 1800000          # idle, done or blocked
 
 ### Opening a session for a new feature
 
-One session per feature. Standing worktrees come first (`<repo>-wt1`,
-`<repo>-wt2`, ... beside the primary checkout), then a one-off worktree. An
-agent already bound to a worktree is reused once its feature is finished.
+One session per feature. If the repository has standing slots (section 0),
+they come first, then a one-off worktree; a repository without slots uses
+one-off worktrees only and skips steps 2 and 3. An agent already bound to a
+worktree is reused once its feature is finished.
 
 1. What gets a session: a new feature or a separate concern. Work on an open PR
    goes to the session that owns it. A bounded job (review, RCA, a flake fix)
    is a subagent (section 5).
 2. Pick the slot in this order:
-   1. `python3 <skill dir>/scripts/fleet.py --slots <primary checkout>`. Take
+   1. `python3 <skill dir>/scripts/repo.py slots <checkout>`. Take
       the lowest-numbered `FREE` slot.
    2. `FREE` means: tree clean, nothing unpushed, the branch's PR merged or
       closed, no agent working or blocked. An open PR is not finished, even
@@ -195,18 +236,21 @@ agent already bound to a worktree is reused once its feature is finished.
    5. No free slot: a one-off worktree. Do not wait on a slot and do not evict
       one.
 3. Reuse a free slot:
-   1. The agent is idle in it: `herdr agent prompt <pane> "/clear"`, then
-      confirm the pane is empty and `herdr agent list` shows a new session id.
-   2. The pane is at a shell: `herdr agent start <name> --kind claude --pane <pane>`.
+   1. The agent is idle in it: start a fresh conversation with the harness's
+      own command (`/clear` in Claude Code, `/new` in Codex), sent with
+      `herdr agent prompt <pane> "<command>"`, then confirm the pane is empty.
+      If you do not know the command for that harness, exit the agent and
+      start it again as in the next step.
+   2. The pane is at a shell: `herdr agent start <name> --kind <harness> --pane <pane>`.
    3. The worktree has no workspace:
       `herdr worktree open --cwd <primary checkout> --path <worktree> --label "wt<N> · <task>" --no-focus`,
       then `agent start` on the returned `.result.root_pane.pane_id`.
    4. The new branch is the session's first step, in its brief:
-      `git fetch origin main && git checkout -B <branch> origin/main`. The old
+      `git fetch origin <default> && git checkout -B <branch> origin/<default>`. The old
       branch stays; deleting it is the user's call.
 4. One-off worktree, as a sibling directory `<repo>-<slug>`:
-   `herdr worktree create --cwd <primary checkout> --branch <branch> --base origin/main --path <repo>-<slug> --label "<slug> · <task>" --no-focus`,
-   then `agent start` on the returned root pane. `git fetch origin main` first.
+   `herdr worktree create --cwd <primary checkout> --branch <branch> --base origin/<default> --path <repo>-<slug> --label "<slug> · <task>" --no-focus`,
+   then `agent start` on the returned root pane. `git fetch origin <default>` first.
 5. Agent names match `[a-z][a-z0-9_-]{0,31}` and are unique: `wt4-<slug>`.
    Always `--no-focus`; the user is looking at another pane.
 6. Start the agent with its default permission mode. Do not pass flags that
@@ -225,7 +269,9 @@ agent already bound to a worktree is reused once its feature is finished.
 ## 5. Subagents
 
 The user names the role and the pass condition and expects you to write the
-brief. Templates are in `references/briefs.md`.
+brief. Templates are in `references/briefs.md`. Use your harness's own
+subagent mechanism. If it has none, or the job needs a different harness, open
+a one-off session for it (section 4) and close it when the job is done.
 
 1. Independent issues (a flake the change did not cause, a separate bug, a
    separate CI-speed fix): one subagent, one worktree, one branch off the remote

@@ -152,7 +152,7 @@ panel (T5) until the verdict is SHIP.
 From <user>, relayed by the overseer session (pane <id>). You are a new session for one feature.
 Feature: <name>. Their words: "<quoted>".
 Worktree: <path>. Confirm `git rev-parse --show-toplevel` matches, and `git status --short` is empty; if not, stop and report.
-Start: git fetch origin main && git checkout -B <branch> origin/main.
+Start: git fetch origin <default> && git checkout -B <branch> origin/<default>.
 Rename your Herdr workspace to "<wtN or slug> · <task>".
 ## Context
 <research findings, approved option, exemplar paths, task id, evidence with ids>

@@ -2,7 +2,7 @@
 """Fleet snapshot for the overseer skill. Read-only.
 
 Joins `herdr agent list` + `herdr workspace list` with each agent's Claude
-transcript and prints, per session: pane, workspace label, status, worktree,
+Code transcript (other harnesses: the pane's current screen) and prints, per session: pane, workspace label, status, worktree,
 branch, the last prompts entered in the pane, and the tail of the session's
 last reply. A prompt sent by another agent through `herdr agent prompt` is
 recorded like a paste by the user; those are tagged [pasted] or [relay], and
@@ -13,8 +13,6 @@ only an untagged prompt is certainly the user's own typing.
   fleet.py --find TEXT     only sessions whose prompts/replies mention TEXT
   fleet.py --prs           also list my open PRs by branch (one REST call)
   fleet.py -n 6 -t 900     prompts shown / reply tail chars
-  fleet.py --slots REPO    FREE or BUSY for each standing worktree REPO-wt<N>
-                           (git state, PR state, agent state; one gh call each)
 """
 import argparse, glob, json, os, re, subprocess, sys
 
@@ -92,56 +90,23 @@ def my_prs():
         return []
     return [l.split("\t") for l in out.splitlines() if l]
 
-def git(wt, *args):
-    return subprocess.run(["git", "-C", wt, *args], capture_output=True, text=True).stdout.strip()
-
-def slots(repo):
-    """Standing worktrees <repo>-wt1..wt9: which can take a new feature."""
-    agents = {}
-    for ag in herdr("agent", "list").get("agents", []):
-        agents.setdefault(ag.get("cwd", ""), []).append(ag)
-    open_ws = {w.get("path"): w.get("open_workspace_id")
-               for w in herdr("worktree", "list", "--cwd", repo).get("worktrees", [])}
-    for wt in sorted(w for w in glob.glob(repo.rstrip("/") + "-wt*") if re.search(r"-wt\d+$", w)):
-        branch = git(wt, "branch", "--show-current") or "(detached)"
-        dirty = len(git(wt, "status", "--porcelain").splitlines())
-        unpushed = git(wt, "rev-list", "--count", "@{u}..HEAD") or "no upstream"
-        ahead = git(wt, "rev-list", "--count", "origin/main..HEAD") or "?"
-        try:
-            pr = json.loads(subprocess.run(
-                ["gh", "pr", "list", "--head", branch, "--state", "all", "--limit", "1", "--json", "number,state,isDraft"],
-                capture_output=True, text=True, timeout=30, cwd=wt).stdout or "[]")
-        except Exception:
-            pr = []
-        state = pr[0]["state"] if pr else "NONE"
-        ags = agents.get(wt, [])
-        status = ",".join(f"{a['pane_id']}:{a.get('agent_status')}" for a in ags) or "no agent"
-        why = []
-        if any(a.get("agent_status") in ("working", "blocked") for a in ags):
-            why.append("agent busy")
-        if dirty:
-            why.append(f"{dirty} dirty files")
-        if state == "OPEN":
-            why.append(f"PR {pr[0]['number']} open")
-        if state == "NONE" and ahead not in ("0", "?"):
-            why.append(f"{ahead} commits with no PR")
-        if unpushed not in ("0", "no upstream"):
-            why.append(f"{unpushed} unpushed")
-        prs = f"PR {pr[0]['number']} {state}" if pr else "no PR"
-        print(f"{'FREE' if not why else 'BUSY'} | {os.path.basename(wt)} | ws {open_ws.get(wt) or 'not open'} | {status} | "
-              f"{branch} | {prs} | {'; '.join(why) or 'clean, feature finished'}")
+def screen_tail(pane, lines=40):
+    """What the pane shows now. Works for any agent harness."""
+    try:
+        out = subprocess.run(["herdr", "agent", "read", pane, "--source", "recent-unwrapped", "--lines", str(lines)],
+                             capture_output=True, text=True, timeout=20).stdout
+    except Exception:
+        return ""
+    return "\n".join(l.rstrip() for l in out.splitlines() if l.strip())
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--brief", action="store_true")
     ap.add_argument("--find")
     ap.add_argument("--prs", action="store_true")
-    ap.add_argument("--slots", metavar="REPO", help="primary checkout, e.g. ~/code/myrepo")
     ap.add_argument("-n", type=int, default=8)
     ap.add_argument("-t", type=int, default=1400)
     a = ap.parse_args()
-    if a.slots:
-        return slots(os.path.abspath(os.path.expanduser(a.slots)))
 
     labels = {w["workspace_id"]: (w.get("number"), w.get("label")) for w in herdr("workspace", "list").get("workspaces", [])}
     me = os.environ.get("HERDR_PANE_ID")
@@ -157,12 +122,15 @@ def main():
         head = (f"{ag['pane_id']}{' (me)' if ag['pane_id'] == me else ''} | ws {num} \"{label}\" | {ag.get('agent')} "
                 f"{ag.get('agent_status')} | {cwd} | {(s or {}).get('branch', '?')} | {sid[:8]}")
         if a.brief:
-            lastp = s["prompts"][-1] if s and s["prompts"] else ("", "")
-            print(f"{head} | last ask [{lastp[0]}]: {lastp[1][:110]!r}")
+            if s and s["prompts"]:
+                print(f"{head} | last ask [{s['prompts'][-1][0]}]: {s['prompts'][-1][1][:110]!r}")
+            else:
+                print(f"{head} | no transcript; screen: {screen_tail(ag['pane_id'], 12)[-110:]!r}")
             continue
         print(f"\n######## {head}")
         if not s:
-            print("  (no transcript found)")
+            print("  (no Claude Code transcript; showing the pane's screen)")
+            print("    " + screen_tail(ag["pane_id"])[-a.t:].replace("\n", "\n    "))
             continue
         for ts, p in s["prompts"][-a.n:]:
             print(f"  U[{ts}Z] {p[:400]}")

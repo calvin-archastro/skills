@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Discard leftover changes in a worktree that are already on origin/main.
+"""Discard leftover changes in a worktree that are already on the default branch.
 
 A dirty path is proven merged when what is on disk is byte-for-byte what
-origin/main has at that path (same blob and mode), or the path is gone on disk
-and also absent from origin/main. Discarding such a path loses nothing.
+the default branch has at that path (same blob and mode), or the path is gone on disk
+and also absent from the default branch. Discarding such a path loses nothing.
 Everything else is left alone and listed.
 
   clean_merged.py <worktree>           dry run: verdict per dirty path
   clean_merged.py <worktree> --apply   discard the proven paths only
+  clean_merged.py <worktree> --base REF  compare against REF instead (not fetched)
 
 Refuses to apply while a Herdr agent in that worktree is working or blocked.
 """
@@ -40,8 +41,18 @@ def on_disk(wt, path):
         return mode, git(wt, "hash-object", "--", path).decode().strip()
     return None
 
-def on_main(wt, path):
-    out = git(wt, "ls-tree", "origin/main", "--", path).decode().strip()
+def base_ref(wt):
+    """Remote default branch as a ref, e.g. origin/main."""
+    ref = git(wt, "symbolic-ref", "--short", "refs/remotes/origin/HEAD").decode().strip()
+    if ref:
+        return ref
+    for cand in ("origin/main", "origin/master"):
+        if git(wt, "rev-parse", "--verify", "-q", cand):
+            return cand
+    sys.exit("cannot find the remote default branch; pass --base REF")
+
+def on_main(wt, path, base):
+    out = git(wt, "ls-tree", base, "--", path).decode().strip()
     if not out:
         return None
     mode, kind, blob = out.split("\t")[0].split()
@@ -59,23 +70,26 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("worktree")
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--base", help="ref to compare against (default: the remote default branch)")
     a = ap.parse_args()
     wt = os.path.abspath(os.path.expanduser(a.worktree))
-    git(wt, "fetch", "-q", "origin", "main", check=True)
+    base = a.base or base_ref(wt)
+    if "/" in base and not a.base:
+        git(wt, "fetch", "-q", *base.split("/", 1), check=True)
 
     proven, kept = [], []
     for p in dirty_paths(wt):
-        disk, main_ = on_disk(wt, p), on_main(wt, p)
+        disk, main_ = on_disk(wt, p), on_main(wt, p, base)
         if os.path.isdir(os.path.join(wt, p)) and not os.path.islink(os.path.join(wt, p)):
             kept.append((p, "directory or submodule"))
         elif disk == main_:
-            proven.append((p, "identical to origin/main" if disk else "absent here and on origin/main"))
+            proven.append((p, "identical to the default branch" if disk else "absent here and on the default branch"))
         elif disk is None:
-            kept.append((p, "deleted here, still on origin/main"))
+            kept.append((p, "deleted here, still on the default branch"))
         elif main_ is None:
-            kept.append((p, "not on origin/main"))
+            kept.append((p, "not on the default branch"))
         else:
-            kept.append((p, "differs from origin/main"))
+            kept.append((p, "differs from the default branch"))
 
     for p, why in proven:
         print(f"MERGED  {p}  ({why})")
