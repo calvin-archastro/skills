@@ -158,7 +158,8 @@ Each phase: how the user opens it, what to send back, the skill, the bar for don
 
 1. Before a session clears or compacts: `handoff` skill.
 2. Resume by reading the previous transcript, not by re-deriving.
-3. Leftover staged files in a worktree: check against the default branch; if
-   merged, reset; if not, report.
-4. Remove dead worktrees and build output you verified are unused. List what
-   you left and why.
+3. Leftover staged files in a worktree: check against the default branch and
+   report whether they are already merged. Reset only when told to.
+4. Dead worktrees and build output: list them with sizes and what proves they
+   are unused, and remove on the user's answer. Build output you created in
+   your own scratch area you clean without asking.

@@ -3,7 +3,10 @@
 
 Joins `herdr agent list` + `herdr workspace list` with each agent's Claude
 transcript and prints, per session: pane, workspace label, status, worktree,
-branch, the user's last prompts, and the tail of the session's last reply.
+branch, the last prompts entered in the pane, and the tail of the session's
+last reply. A prompt sent by another agent through `herdr agent prompt` is
+recorded like a paste by the user; those are tagged [pasted] or [relay], and
+only an untagged prompt is certainly the user's own typing.
 
   fleet.py                 one block per live agent
   fleet.py --brief         one line per live agent
@@ -11,7 +14,7 @@ branch, the user's last prompts, and the tail of the session's last reply.
   fleet.py --prs           also list my open PRs by branch (one REST call)
   fleet.py -n 6 -t 900     prompts shown / reply tail chars
 """
-import argparse, glob, json, os, subprocess, sys
+import argparse, glob, json, os, re, subprocess, sys
 
 def herdr(*args):
     try:
@@ -26,6 +29,30 @@ def text_of(content):
     if isinstance(content, list):
         return " ".join(b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text")
     return ""
+
+QUIET_COMMANDS = {"/clear", "/model", "/fast", "/effort", "/status", "/usage", "/login", "/compact", "/resume"}
+RELAY = re.compile(r"relayed (by|from)|^(Lead|Parent|Overseer) here|^From .{0,40}'s session in ", re.I)
+PASTE = re.compile(r"</?pasted_content[^>]*>")
+
+def entered_prompt(d, txt):
+    """Return the prompt entered in the pane, or None for harness-generated turns."""
+    if d.get("isMeta") or d.get("isCompactSummary") or txt.startswith("[Request interrupted"):
+        return None
+    cmd = re.search(r"<command-name>(/[\w:-]+)</command-name>", txt)
+    if cmd:
+        if cmd.group(1) in QUIET_COMMANDS:
+            return None
+        args = re.search(r"<command-args>(.*?)</command-args>", txt, re.S)
+        return (cmd.group(1) + " " + (args.group(1).strip() if args else "")).strip()
+    origin = d.get("origin")
+    if isinstance(origin, dict) and origin.get("kind") != "human":
+        return None
+    pasted = bool(PASTE.search(txt))
+    txt = PASTE.sub("", txt).strip()
+    if not isinstance(origin, dict) and (txt.startswith("<") or txt.startswith("This session is being continued")):
+        return None  # older transcripts carry no origin field
+    tag = "[relay] " if RELAY.search(txt[:300]) else "[pasted] " if pasted else ""
+    return tag + txt
 
 def read_session(sid):
     hits = glob.glob(os.path.expanduser(f"~/.claude/projects/*/{sid}.jsonl"))
@@ -46,10 +73,9 @@ def read_session(sid):
             continue
         ts = (d.get("timestamp") or "")[5:16]
         if d.get("type") == "user":
-            # Skip tool results, harness notices and compaction summaries: only what the user typed.
-            if d.get("isMeta") or txt.startswith("<") or txt.startswith("This session is being continued"):
-                continue
-            prompts.append((ts, txt))
+            p = entered_prompt(d, txt)
+            if p:
+                prompts.append((ts, p))
         elif d.get("type") == "assistant":
             last, last_ts = txt, ts
     return {"branch": branch, "prompts": prompts, "last": last, "last_ts": last_ts,

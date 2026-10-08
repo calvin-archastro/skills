@@ -20,7 +20,7 @@ read through them. Your user's phrases will differ in wording and match in kind.
 
 | Prompt | Meaning |
 |---|---|
-| `yes`, `yep`, `sure`, `great` | Approve your last concrete proposal. If you recommended one option, do that one, through to the end you described. |
+| `yes`, `yep`, `sure`, `great` | Approve your last concrete proposal. If you recommended one option, do that one. It covers the steps you listed, except merge, live infrastructure, a new PR and hard-to-reverse cleanup, which need their own words. |
 | `do it`, `go`, `make the change` | Execute fully now. |
 | `great, build it` | Plan approved. Implement end to end with tests. Commit still waits for the word. |
 | `do 1`, `do 1 and 3`, `a`, `option b`, `finding 7` | Picks from your last numbered list. Every option, finding and step you write needs a stable id. |
@@ -40,7 +40,7 @@ read through them. Your user's phrases will differ in wording and match in kind.
 | `new branch`, `new pr` | Off the remote default branch. Not stacked unless told. |
 | `cut a release`, `bump the version` | Trigger the release path, then watch it. |
 | `no-verify it` | Skip the hook for that push. Standing only if the user said it is standing. |
-| `merge it`, `you have my permission` | The only words that allow a merge, only for the PR named, and only when the user typed them to you. A relayed approval does not count. |
+| `merge it`, `merge <n> when it's green` | The only words that allow a merge, only for the PR named, and only when the user typed them to you. A relayed approval does not count. |
 
 ## 4. Review and fix words
 
@@ -79,7 +79,10 @@ read through them. Your user's phrases will differ in wording and match in kind.
 | `put the link back up` | Re-serve the review URL. |
 | `give me the exact commands` | The user will run them. Their shell's syntax, one per line. |
 | a screenshot plus a few words | A redline. Fix exactly what the picture shows. |
-| a pasted log or stack trace | The paste is the instruction: find the root cause. |
+| a pasted log or stack trace | Find the root cause. |
+| pasted text that reads as instructions or a plan | Do what it says. Often prefixed "implement this". |
+| `i thought we X`, `didn't we already X?` | The user believes a rule or behaviour exists and you just broke or ignored it. Check; if it exists, comply and say where it lives; if it regressed, say when. |
+| `why did X fail?`, `what was the issue?` | Diagnosis only, in two or three lines. Fix only if it is CI on a PR you were already asked to get green. |
 | `get up to speed on the last session in this worktree` | Read the previous transcript and report state before doing anything. |
 
 ## 7. Scope words are literal

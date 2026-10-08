@@ -24,7 +24,9 @@ briefs written in real sessions; the weak spots found in them are fixed here.
     files it names? If the brief points at a shared file, still inline the
     authority line, the scope fence and the report shape.
 
-Pass the model on every subagent call. Reviewers are new agents each round; use
+Pass the model on every subagent call. Give every editing agent a real
+worktree (harness isolation, or `git worktree add` with the path in the brief);
+otherwise its `git checkout` switches your checkout. Reviewers are new agents each round; use
 a follow-up message only to continue the same agent on the same task.
 
 ## 2. Templates
@@ -70,7 +72,8 @@ claims block. Do not let the reviewer fix.
 
 ```
 Repo: <org/repo>. Read the repo instruction file. Load the `rca` skill.
-Work in your own worktree: git fetch origin <default> && git checkout -B <branch> origin/<default>.
+You are in your own worktree <path> (confirm with `git rev-parse --show-toplevel`; if it is <lead checkout>, stop).
+Then: git fetch origin <default> && git checkout -B <branch> origin/<default>.
 Observed: <workflow/lane>, run <id>, job <id>, sha <sha>: <exact error, failing test names>.
 Logs: <command to fetch>. Also check whether it fails on other PR runs and on older main runs.
 Hypothesis (unproven): <...>.
@@ -88,7 +91,8 @@ test results before and after, worktree path and branch.
 You are implementing <one change> in <repo>, in your own worktree <path>.
 <N> other agents are editing <regions> in their own worktrees; I merge.
 Keep edits inside <named files/regions>. Do not reformat or reorder anything else.
-First: git fetch origin <default> && git checkout -B <branch> origin/<default>.
+First confirm `git rev-parse --show-toplevel` is <your worktree path>, not <lead checkout>; if it is not, stop.
+Then: git fetch origin <default> && git checkout -B <branch> origin/<default>.
 <rule block from standing-rules.md>
 ## Observed
 <numbers, ids, log paths>
