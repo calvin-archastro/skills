@@ -20,6 +20,7 @@ one empirically successful prompting technique on rails.
 | **`beautify-page`** | Marketing/landing pages with anti-AI-slop craft: token plan, distinctive type/color, one signature, purposeful motion. Build, polish, or meta-prompt modes + paste-ready prompt pack. |
 | **`visualize-data`** | Data → claim → chart → designed self-contained HTML. Newsroom / visual-essay / scale-poster / explainer registers, FT chart lookup, anti-dashboard slop. Research + paste prompts included. |
 | **`omarchy-plugin`** | Author/review/publish Omarchy Quickshell plugins: clone-a-builtin, `qs.Ui` contract, QML untrusted-content (AutoText remote images), Process/argv secrets, marketplace listing. |
+| **`overseer`** | One session runs the others: decode terse prompts, route them to the owning worktree session (Herdr) or a subagent, attach the standing rules to every brief, hold the proof and review bar, and report back in one numbered screen. Includes a prompt decoder, per-phase SDLC playbook, brief templates, and a read-only fleet snapshot script. |
 
 ## Install
 
@@ -49,7 +50,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data omarchy-plugin; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data omarchy-plugin overseer; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```
