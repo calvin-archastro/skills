@@ -23,11 +23,18 @@ Reference files, read when the step needs them:
 - `references/standing-rules.md`: the rule block to attach to delegated work,
   plus the escalation ladder.
 - `scripts/fleet.py`: read-only snapshot of every live session (Herdr + Claude
-  Code transcripts).
+  Code transcripts); `--slots` reports which standing worktrees are free.
+- `scripts/clean_merged.py`: discards leftover files in a worktree that are
+  already on the remote default branch, and nothing else.
 
 The repository's own instruction file (CLAUDE.md, AGENTS.md) wins over this
 skill wherever the two disagree, except where the user has told you otherwise
 in their own words.
+
+Private overlay: if `~/.agents/overseer.local.md` exists, read it before
+acting. It holds this user's own standing grants, repository paths and
+project rules, and it wins over the defaults here. Record a new standing rule
+from the user there, not in this file, so a reinstall does not lose it.
 
 ## 1. What you own, and what stays the user's
 
@@ -56,7 +63,9 @@ Commit and push have three scopes:
 Hard-to-reverse cleanup is never standing: `git reset --hard`, deleting a
 branch or worktree, dropping a stash, closing a PR, removing build output
 outside your own scratch area. Report what you found and what you would remove,
-then act on the answer.
+then act on the answer. One exception that is safe by construction:
+leftover files in a worktree that are provably already on the remote default
+branch may be discarded through `scripts/clean_merged.py --apply` (section 4).
 
 Merge: only on words the user typed to you, naming the PR. "You have my
 permission" covers whatever action was just being discussed, which is often
@@ -95,9 +104,9 @@ as "Overseer proposal, not confirmed by the user".
    is an open item; so is a dirty tree with no PR.
 4. Workspace labels go stale. Trust the transcript and `git -C <worktree> status`.
    Rename only your own workspace.
-5. One worktree, one concern. A different concern goes to an idle worktree on a
-   new branch off the remote default branch. Never edit a worktree another
-   session owns.
+5. One worktree, one concern. A different concern goes to a free slot or a
+   one-off worktree (section 4), on a new branch off the remote default branch.
+   Never edit a worktree another session owns.
 6. Machine health is yours: disk (build caches across many worktrees fill it),
    stray browser or container processes, API rate limits. Check before fanning
    out builds. Kill only PIDs you started.
@@ -156,8 +165,62 @@ herdr agent wait <pane> --timeout 1800000          # idle, done or blocked
    6. What to report back.
 5. After it settles, read the result and verify the claim yourself before
    repeating it (section 6).
-6. Use panes and agents only. Do not create workspaces, tabs or worktrees unless
-   asked for that layout.
+6. Do not split panes or add tabs. New sessions are opened only as below.
+
+### Opening a session for a new feature
+
+One session per feature. Standing worktrees come first (`<repo>-wt1`,
+`<repo>-wt2`, ... beside the primary checkout), then a one-off worktree. An
+agent already bound to a worktree is reused once its feature is finished.
+
+1. What gets a session: a new feature or a separate concern. Work on an open PR
+   goes to the session that owns it. A bounded job (review, RCA, a flake fix)
+   is a subagent (section 5).
+2. Pick the slot in this order:
+   1. `python3 <skill dir>/scripts/fleet.py --slots <primary checkout>`. Take
+      the lowest-numbered `FREE` slot.
+   2. `FREE` means: tree clean, nothing unpushed, the branch's PR merged or
+      closed, no agent working or blocked. An open PR is not finished, even
+      when green; review comments come back to that session.
+   3. The script sees only the checked-out branch. Before taking the slot, read
+      the session (`fleet.py --find`, `herdr agent read`): no other open PR it
+      is watching, nothing the user asked it to hold, no unsent text in its
+      input box. Any of those means the slot is busy.
+   4. A slot that is busy only because of dirty files: run
+      `python3 <skill dir>/scripts/clean_merged.py <worktree>`, then `--apply`.
+      Proven merged means the file on disk is byte-identical to the remote
+      default branch at that path, or gone in both. The script discards only
+      those. Whatever it lists as KEEP stays, the slot stays busy, and you
+      report the kept paths.
+   5. No free slot: a one-off worktree. Do not wait on a slot and do not evict
+      one.
+3. Reuse a free slot:
+   1. The agent is idle in it: `herdr agent prompt <pane> "/clear"`, then
+      confirm the pane is empty and `herdr agent list` shows a new session id.
+   2. The pane is at a shell: `herdr agent start <name> --kind claude --pane <pane>`.
+   3. The worktree has no workspace:
+      `herdr worktree open --cwd <primary checkout> --path <worktree> --label "wt<N> · <task>" --no-focus`,
+      then `agent start` on the returned `.result.root_pane.pane_id`.
+   4. The new branch is the session's first step, in its brief:
+      `git fetch origin main && git checkout -B <branch> origin/main`. The old
+      branch stays; deleting it is the user's call.
+4. One-off worktree, as a sibling directory `<repo>-<slug>`:
+   `herdr worktree create --cwd <primary checkout> --branch <branch> --base origin/main --path <repo>-<slug> --label "<slug> · <task>" --no-focus`,
+   then `agent start` on the returned root pane. `git fetch origin main` first.
+5. Agent names match `[a-z][a-z0-9_-]{0,31}` and are unique: `wt4-<slug>`.
+   Always `--no-focus`; the user is looking at another pane.
+6. Start the agent with its default permission mode. Do not pass flags that
+   skip permission checks; a session that needs them is started by the user.
+7. The first prompt is the full brief (T8 in `references/briefs.md`). The new
+   session has the repository's instruction file and nothing from this
+   conversation.
+8. The new session renames its own workspace (the brief tells it to). You do
+   not rename it.
+9. Tell the user in one line: slot, pane, branch, feature. Add it to the fleet
+   table.
+10. Closing: when a one-off's PR merges, propose closing its workspace and
+    removing its worktree, and do it on the user's answer. Never close a
+    workspace or remove a worktree you did not create. Standing slots stay open.
 
 ## 5. Subagents
 
@@ -266,7 +329,7 @@ user's own review comments are orders.
    and what each resumes with. Afterwards send each a resume message that says
    the stop was not its mistake.
 8. A pane's agent exited or was replaced. The session id changes; re-run
-   `fleet.py`. Do not start an agent in a pane unless asked.
+   `fleet.py`. Start a new agent in it only by the section 4 steps.
 9. Your own context was compacted. Rebuild the fleet table from `fleet.py` and
    the PR list, not from memory.
 

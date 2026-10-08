@@ -146,6 +146,26 @@ Report a table: issue | where | evidence | severity | concrete change. Then verd
 Run two or three roles per round, apply the proven items, and send a fresh
 panel (T5) until the verdict is SHIP.
 
+### T8. First prompt to a new or recycled session
+
+```
+From <user>, relayed by the overseer session (pane <id>). You are a new session for one feature.
+Feature: <name>. Their words: "<quoted>".
+Worktree: <path>. Confirm `git rev-parse --show-toplevel` matches, and `git status --short` is empty; if not, stop and report.
+Start: git fetch origin main && git checkout -B <branch> origin/main.
+Rename your Herdr workspace to "<wtN or slug> · <task>".
+## Context
+<research findings, approved option, exemplar paths, task id, evidence with ids>
+## Do
+<numbered steps, or "plan first and report numbered options; no code">
+## Boundaries
+<rule block from standing-rules.md: commit/push authority with its source, scope fences>
+This session owns this feature only. A separate concern you find gets reported, not fixed here.
+## Report
+When done or blocked: what changed, commands run and results, what only CI can confirm, HEAD sha.
+The user talks to the overseer; I read your pane. Ask questions in your reply, numbered.
+```
+
 ## 3. Fan-out shapes
 
 | Work | Agents | Partition |
