@@ -1,0 +1,22 @@
+{
+  "background": "#101216",
+  "layers": [
+    {
+      "type": "rect", "name": "band", "x": "50%", "y": "50%", "width": "100%", "height": 300,
+      "fill": "#2f6fed",
+      "enter": { "kind": "slide-left", "at": 0, "duration": 0.35, "ease": "outCubic" }
+    },
+    {
+      "type": "text", "name": "kicker", "x": "50%", "y": "41%", "text": "NOW ACTING AS", "size": 30, "bold": true,
+      "fill": "#ffffffcc", "enter": { "kind": "fade", "at": 0.2, "duration": 0.3 }
+    },
+    {
+      "type": "text", "name": "name", "x": "50%", "y": "50%", "text": "Sam", "size": 120, "bold": true,
+      "fill": "#ffffff", "enter": { "kind": "rise", "at": 0.25, "duration": 0.35 }
+    },
+    {
+      "type": "text", "name": "role", "x": "50%", "y": "59%", "text": "New member at Acme", "size": 40,
+      "fill": "#ffffff", "enter": { "kind": "fade", "at": 0.45, "duration": 0.3 }
+    }
+  ]
+}
