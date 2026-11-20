@@ -102,12 +102,39 @@ Time budget, 300 seconds in total:
 The scenario lists both environments so the same script runs on either. The
 script uses `$APP_URL`; the run picks the value.
 
-The project's facts are in the "Environments" section of
-`docs/friction-logs/README.md`: base URLs, how the local stack is started, and
-how a persona signs in on each. If that section is missing, find the facts in
-the project (README, AGENTS.md, CLAUDE.md, its own skills), confirm them with
-the person, and write the section before the first scenario. Do not guess a
-URL, a port or a sign-in route.
+#### Research how to run it
+
+Do this before writing beats, for every environment the scenario lists. A
+scenario nobody can start is not reusable.
+
+1. Read what is already known: the "Environments" section of
+   `docs/friction-logs/README.md` and the "How this was run" section of the
+   latest findings file for this scenario or a neighbouring one.
+2. Fill the gaps from the project, in this order: README, AGENTS.md and
+   CLAUDE.md, the project's own skills, service and task-runner config,
+   test and synthetic-check config (it usually names the staging URLs), and
+   the sign-in route's source.
+3. Find, for each environment:
+   - the base URL, and for local, how the port is found;
+   - the command that starts the stack and how long it takes to be ready;
+   - a check that the app answers (health URL or page);
+   - how a persona signs in and how its role is set;
+   - how the data the journey needs is created;
+   - how to reset or clean up afterwards.
+4. Try what you can without changing anything: resolve the port, call the
+   health check, open the sign-in page. Mark each fact as **checked** (you ran
+   it and it worked) or **from docs** (read, not run).
+5. Ask the person only for what the project cannot tell you, such as where
+   staging test accounts are kept.
+6. Write the result in two places:
+   - facts that hold for every scenario go in the "Environments" section of
+     `docs/friction-logs/README.md`;
+   - facts for this journey (data to create, starting pages, cleanup) go in
+     the scenario's Environment section.
+
+Do not guess a URL, a port or a sign-in route. If something could not be
+found, write "unknown" with what you tried, and resolve it with the person
+before recording.
 
 **Local**
 
@@ -325,13 +352,24 @@ Do not upload or share the video unless the person asks.
 
 ## 7. Findings
 
-Write `docs/friction-logs/<slug>/runs/<date>-<env>.md`:
+Write `docs/friction-logs/<slug>/runs/<date>-<env>.md` from `templates/run.md`:
 
 1. Environment, commit or recording time, personas, and the path of the video.
-2. A table of frictions: timestamp in the final video, persona, what happened,
+2. **How this was run**: the commands and steps actually used for this
+   recording, in order, so the next person can repeat it without research.
+   - starting the stack, or the staging URL;
+   - the readiness check;
+   - each persona's sign-in, with its role;
+   - the data created before recording;
+   - the cleanup done afterwards;
+   - anything that differed from the README or the scenario, and what failed
+     before the working way was found.
+   Then correct the README's "Environments" section and the scenario where
+   they were wrong.
+3. A table of frictions: timestamp in the final video, persona, what happened,
    what the person expected, severity (blocker, slows, cosmetic).
-3. What worked well, in two or three lines.
-4. Anything in the scenario or script that should change for the next run.
+4. What worked well, in two or three lines.
+5. Anything in the scenario or script that should change for the next run.
 
 Update the scenario's row in `docs/friction-logs/README.md` with the date and
 environment of this run.
@@ -346,3 +384,5 @@ environment of this run.
 6. Nothing private is readable in any frame you sampled.
 7. `scenario.md`, `script.md` and the findings file are in
    `docs/friction-logs/<slug>/` and the README index lists the scenario.
+8. The findings file has "How this was run" with the commands used, and the
+   README's "Environments" section agrees with it.

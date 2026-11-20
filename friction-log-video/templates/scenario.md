@@ -21,6 +21,9 @@
 
 ## Environment
 
+Each line is marked **checked** (run and it worked) or **from docs** (read,
+not run). Shared facts are in `../README.md` under "Environments".
+
 ### Local
 
 - Start: <the command the person runs>.
