@@ -1,0 +1,26 @@
+{
+  "layers": [
+    {
+      "type": "ellipse", "name": "ring", "x": "62%", "y": "40%", "width": 220, "height": 120,
+      "stroke": "#e5484d", "strokeWidth": 6,
+      "draw": { "at": 0, "duration": 0.45, "ease": "outCubic" },
+      "exit": { "kind": "fade", "at": 3.1, "duration": 0.4 }
+    },
+    {
+      "type": "line", "name": "arrow", "x": "62%", "y": "40%", "from": [-250, 150], "to": [-105, 55],
+      "stroke": "#e5484d", "strokeWidth": 6,
+      "draw": { "at": 0.3, "duration": 0.35 },
+      "exit": { "kind": "fade", "at": 3.1, "duration": 0.4 }
+    },
+    {
+      "type": "rect", "name": "label", "x": "44%", "y": "58%", "width": 460, "height": 76, "radius": 14,
+      "fill": "#16181dee", "stroke": "#e5484d", "strokeWidth": 3,
+      "shadow": { "blur": 24, "y": 8 },
+      "enter": { "kind": "rise", "at": 0.5, "duration": 0.35 },
+      "exit": { "kind": "fade", "at": 3.1, "duration": 0.4 },
+      "children": [
+        { "type": "text", "name": "words", "text": "No feedback after click", "size": 32, "bold": true, "fill": "#ffffff" }
+      ]
+    }
+  ]
+}

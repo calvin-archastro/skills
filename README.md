@@ -21,6 +21,7 @@ one empirically successful prompting technique on rails.
 | **`visualize-data`** | Data → claim → chart → designed self-contained HTML. Newsroom / visual-essay / scale-poster / explainer registers, FT chart lookup, anti-dashboard slop. Research + paste prompts included. |
 | **`omarchy-plugin`** | Author/review/publish Omarchy Quickshell plugins: clone-a-builtin, `qs.Ui` contract, QML untrusted-content (AutoText remote images), Process/argv secrets, marketplace listing. |
 | **`overseer`** | One session runs the others: decode terse prompts, route them to the owning worktree session (Herdr) or a subagent, attach the standing rules to every brief, inspect the repo for its default branch, agent harness and standing worktrees, open or recycle a worktree session per feature, hold the proof and review bar, and report back in one numbered screen. Includes a prompt decoder, per-phase SDLC playbook, brief templates, and a read-only fleet snapshot script. |
+| **`friction-log-video`** | A recorded friction-log video of a product journey, five minutes at most, made in the [Splice](https://github.com/ArchAstro/splice) editor: scenario and beat budget, a one-take script with anchor lines, then the cut — intro pre-roll, face in frame, click zooms, annotations, fades and persona handoff cards. Scenarios, scripts and findings are kept in the project's `docs/friction-logs/` and run on local or staging. Includes templates, Splice recipes and validated scene files. |
 
 ## Install
 
@@ -50,7 +51,7 @@ prefer real files over symlinks.
 
 ```bash
 git clone https://github.com/calvin-archastro/skills ~/projects/skills
-for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data omarchy-plugin overseer; do
+for s in sharpen loop-author rca design-options find-exemplar handoff persist-rule tweet-reply-review beautify-page visualize-data omarchy-plugin overseer friction-log-video; do
   ln -sfn ~/projects/skills/$s ~/.claude/skills/$s
 done
 ```

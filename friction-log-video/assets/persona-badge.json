@@ -1,0 +1,12 @@
+{
+  "layers": [
+    {
+      "type": "rect", "name": "chip", "x": 190, "y": 56, "width": 320, "height": 64, "radius": 32,
+      "fill": "#2f6fed", "shadow": { "blur": 18, "y": 6 },
+      "enter": { "kind": "slide-right", "at": 0, "duration": 0.3 },
+      "children": [
+        { "type": "text", "name": "who", "text": "Sam · member", "size": 30, "bold": true, "fill": "#ffffff" }
+      ]
+    }
+  ]
+}
