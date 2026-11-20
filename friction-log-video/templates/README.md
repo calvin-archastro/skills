@@ -1,7 +1,8 @@
 # Friction logs
 
-Recorded friction-log videos: one person walks a product journey on camera and
-says where it cost them time. Each journey keeps its scenario and script here
+Recorded friction-log videos: one person walks a product journey, then
+narrates it on camera from a written transcript, saying where it cost them
+time. Each journey keeps its scenario and script here
 so it can be recorded again on another environment or after a fix.
 
 The `friction-log-video` skill writes and uses these files.
@@ -11,7 +12,8 @@ The `friction-log-video` skill writes and uses these files.
 ```text
 docs/friction-logs/<slug>/
   scenario.md              # goal, personas, local and staging setup, beats
-  script.md                # what the person says and does, one take
+  script.md                # what the person does in the screen take
+  transcript.md            # every narration line, numbered
   runs/<date>-<env>.md     # findings from one recording, with timestamps
 ```
 

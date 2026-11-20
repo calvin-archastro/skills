@@ -1,6 +1,10 @@
-# Script: <Journey title>
+# Screen take: <Journey title>
 
-Scenario: [scenario.md](scenario.md) · Target: <sum> s · Environment: `$APP_URL`
+Scenario: [scenario.md](scenario.md) · Narration: [transcript.md](transcript.md)
+· Environment: `$APP_URL`
+
+This is the screen take: you use the product, the mic records a scratch track,
+and no camera runs. The narration is recorded afterwards from the transcript.
 
 ## Before you press record
 
@@ -13,23 +17,17 @@ Scenario: [scenario.md](scenario.md) · Target: <sum> s · Environment: `$APP_UR
 
 1. One take. Do not stop the recording.
 2. Pause for a full second between beats.
-3. After a mistake: pause, say **"again"**, and restart the beat from its first line.
+3. After a mistake: pause, say **"again"**, and restart the beat from its anchor line.
 4. While something loads, keep quiet or say what you are waiting for.
 5. At a handoff, say the handoff line, then switch windows.
+6. Say your reactions out loud as they happen. They are not in the video;
+   they become the findings and the transcript's friction lines.
 
 ---
 
-## Beat 1 · Dana · Hook · 12 s
+## Beat 2 · Dana · <title>
 
-**SAY** (to the camera)
-> "I'm Dana, an admin at Acme. I want to invite Sam to our workspace and see
-> what he gets on his side."
-
----
-
-## Beat 2 · Dana · <title> · 35 s
-
-**SAY** (anchor line first)
+**ANCHOR** (say it)
 > "First, the members page."
 
 **DO**
@@ -37,22 +35,8 @@ Scenario: [scenario.md](scenario.md) · Target: <sum> s · Environment: `$APP_UR
 2. Click **Members**.
 3. Click **Invite**.
 
-**REACT**
+**NOTICE**
 - What did you expect to see after the click? What did you get?
-
----
-
-## Beat 3 · Dana · <title> · 40 s
-
-**SAY**
-> "Now the invite itself."
-
-**DO**
-1. Type `sam@example.test`.
-2. Click **Send invite**.
-
-**REACT**
-- Did the page tell you it worked? How long did it take?
 
 ---
 
@@ -63,50 +47,22 @@ Scenario: [scenario.md](scenario.md) · Target: <sum> s · Environment: `$APP_UR
 ```
 
 **SAY, then switch windows**
-> "That's Dana's side done. Now I'm Sam, a new member, opening the invite."
+> "Now Sam."
 
 ---
 
-## Beat 4 · Sam · <title> · 45 s
+## Beat 4 · Sam · <title>
 
-**SAY**
+**ANCHOR**
 > "Here's what Sam sees."
 
 **DO**
 1. <click>
 
-**REACT**
+**NOTICE**
 - Would you know what to do next if nobody had told you?
 
 ---
 
-## Beat 5 · Sam · <title> · 40 s
-
-**SAY**
-> "Last step on Sam's side."
-
-**DO**
-1. <click>
-
-**REACT**
-- What was missing here?
-
----
-
-```text
-================================================================
-  HANDOFF    Sam (member, window 2)  ->  Dana (admin, window 1)
-================================================================
-```
-
-**SAY, then switch windows**
-> "That's Sam in. Back to Dana for the verdict."
-
----
-
-## Beat 6 · Dana · Verdict · 25 s
-
-**SAY** (to the camera, in your own words)
-> "Three things cost me time. One: ... Two: ... Three: ..."
-
-Stop the recording after a two-second pause.
+Stop the recording after the last beat. The hook and the verdict are
+narration only; they are not in this take.

@@ -109,19 +109,21 @@ splice ctl frame <time + 1.5> /tmp/note-over.png
 
 ## Camera: bubble and full frame
 
-The take's camera clip starts as a bubble (the recording layout). Read its
-`look` in `splice ctl read` and write the values down before changing it.
+The narration's camera pieces come in full frame (the `camera` layout). Each
+one has a mic piece of the same length at the same time; change the camera
+piece's `look` freely, but move both together.
 
 ```sh
-# full frame for the hook: split at the section's edges, then
-splice ctl look --clip <camera piece> --scale 1 --x 0 --y 0 --mask none
-splice ctl track --track <screen track> --hide      # only if the piece's screen layer must not show
-# move the bubble to the top right for one beat
+# a journey line: round bubble, bottom right
+splice ctl look --clip <camera piece> --scale 0.26 --x 0.36 --y 0.3 --mask ellipse --feather 0.02
+# the bubble covers the control in use: top right for this line
 splice ctl look --clip <camera piece> --x 0.36 --y -0.32
+# hook and verdict: keep it full frame and hide the screen under it
+splice ctl look --clip <screen piece> --opacity 0
 ```
 
 Hiding a whole track hides it for the whole movie. For one section, split the
-screen clip there too and set that piece's opacity to 0 with `look --opacity 0`.
+screen clip there and set that piece's opacity to 0.
 
 ## Push in on a detail (no click there)
 
@@ -141,11 +143,9 @@ To centre a spot at fraction (fx, fy) of the picture at scale s, set
 splice ctl split --at <wait start>
 splice ctl split --at <wait end>
 splice ctl speed --clip <screen piece> --rate 6
-splice ctl speed --clip <camera piece> --rate 6
-splice ctl speed --clip <mic piece> --rate 6     # and the system-sound piece, if any
-splice ctl volume --clip <mic piece> --value 0
+splice ctl speed --clip <scratch mic piece> --rate 6   # it stays muted
 ```
 
-`speed` moves later clips on its own track only, so every layer's piece needs
-the same rate. After it, `read` and check that every section still lines up,
+Do this before laying the narration in. `speed` moves later clips on its own
+track only, so the screen and scratch pieces need the same rate. After it, `read` and check that every section still lines up,
 then add the wait label over the shortened piece.
