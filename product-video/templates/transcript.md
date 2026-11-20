@@ -38,8 +38,12 @@ bottom of the list, so I scrolled past it twice.
 
 **L5** ...
 
-## Verdict · 25 s · about 55 words · camera full frame
+## Ending · 25 s · about 55 words · camera full frame
 
-**L6** `[after take]` Three things cost me time. One: ... Two: ... Three: ...
+Use the one for the type:
 
-**L7** The findings are in the repo, under docs, friction logs.
+- Demo: **L6** So that's inviting a teammate: two clicks for Dana, one for Sam.
+- Friction log: **L6** `[after take]` Three things cost me time. One: ...
+  Two: ... Three: ...
+- Tutorial: **L6** To recap: open Members, click Invite, send. Sam gets an email.
+- Release clip: no ending line; the end card says it.

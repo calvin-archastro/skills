@@ -20,8 +20,9 @@ and no camera runs. The narration is recorded afterwards from the transcript.
 3. After a mistake: pause, say **"again"**, and restart the beat from its anchor line.
 4. While something loads, keep quiet or say what you are waiting for.
 5. At a handoff, say the handoff line, then switch windows.
-6. Say your reactions out loud as they happen. They are not in the video;
-   they become the findings and the transcript's friction lines.
+6. Friction log: say your reactions out loud as they happen. Other types:
+   at each CHECK, say "pass", or "fail" and what you see. None of this is in
+   the video.
 
 ---
 
@@ -35,7 +36,10 @@ and no camera runs. The narration is recorded afterwards from the transcript.
 2. Click **Members**.
 3. Click **Invite**.
 
-**NOTICE**
+**CHECK** (demo, tutorial, release clip)
+- The members list shows, with an **Invite** button.
+
+**NOTICE** (friction log; use one of the two)
 - What did you expect to see after the click? What did you get?
 
 ---
@@ -64,5 +68,5 @@ and no camera runs. The narration is recorded afterwards from the transcript.
 
 ---
 
-Stop the recording after the last beat. The hook and the verdict are
+Stop the recording after the last beat. The hook and the ending are
 narration only; they are not in this take.

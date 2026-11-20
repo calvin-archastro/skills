@@ -1,4 +1,4 @@
-# Splice recipes for friction log videos
+# Splice recipes for product videos
 
 Each recipe names the `splice ctl` commands to run. Clip and media ids come
 from the replies; read them, do not guess. The scene files are in
@@ -12,7 +12,8 @@ splice --still <skill dir>/assets/persona-card.json /tmp/card.png --size 1920x10
 
 ## Intro symbol (make once, reuse in every video)
 
-`splice ctl symbol list` shows whether `Friction log intro` exists. To make it,
+`splice ctl symbol list` shows whether `Video intro` exists. (An older
+`Friction log intro` has a fixed red kicker; make `Video intro` anyway.) To make it,
 ask the person for a new empty scratch project and work only there (these
 clips go at 0 and would land on top of a take):
 
@@ -22,21 +23,23 @@ splice ctl text --text "Invite a teammate" --at 0.3 --duration 4.7 --track 2 \
   --size 96 --bold --y -0.04 --animate rise --by word --over 0.6 --exit fade
 splice ctl text --text "Acme app · staging · 2026-11-20" --at 0.9 --duration 4.1 --track 3 \
   --size 38 --color "#ffffffb3" --y 0.09 --enter fade --exit fade
-splice ctl text --text "FRICTION LOG" --at 0.1 --duration 4.9 --track 4 \
-  --size 28 --bold --color "#e5484d" --y -0.16 --enter fade --exit fade
-splice ctl symbol make --clip <colour>,<title>,<subtitle>,<kicker> --name "Friction log intro" --wait
+splice ctl text --text "DEMO" --at 0.1 --duration 4.9 --track 4 \
+  --size 28 --bold --color "#ffffffcc" --y -0.16 --enter fade --exit fade
+splice ctl symbol make --clip <colour>,<title>,<subtitle>,<kicker> --name "Video intro" --wait
 ```
 
-The titles become placeholders named `Title`, `Title 2`, `Title 3`. Run
-`splice ctl symbol read --name "Friction log intro"` to see which label holds
-which line before filling them.
+The titles become placeholders named `Title`, `Title 2`, `Title 3`, `Title
+4`. Run `splice ctl symbol read --name "Video intro"` to see which label holds
+which line before filling them. The kicker takes the type: DEMO, FRICTION LOG,
+HOW-TO or NEW.
 
 Use it:
 
 ```sh
-splice ctl symbol add --name "Friction log intro" --at 0 --wait
+splice ctl symbol add --name "Video intro" --at 0 --wait
 splice ctl symbol fill --clip <use> --label Title --text "Invite a teammate" --wait
 splice ctl symbol fill --clip <use> --label "Title 2" --text "Acme app · local · 2026-11-20" --wait
+splice ctl symbol fill --clip <use> --label <kicker's label> --text "FRICTION LOG" --wait
 ```
 
 Make room for it first: every clip of the cut moves right by the intro's
@@ -69,7 +72,7 @@ Persona colours. Keep one colour per persona for the whole video:
 | Second | `#8e4ec6` purple |
 | Third | `#12a594` teal |
 
-Red, green and amber are for annotations; do not give them to a persona.
+Red, green and amber are for callouts; do not give them to a persona.
 
 ## Persona badge (on screen for every beat)
 
@@ -84,7 +87,7 @@ Put badges on a track above the screen and camera. If the badge covers the
 product's own header, move the chip's `x` and `y`, the same way for every
 persona.
 
-## Annotation callout
+## Callout
 
 ```sh
 splice ctl scene new --file <skill dir>/assets/annotation-callout.json --duration 3.5 \

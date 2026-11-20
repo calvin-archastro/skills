@@ -2,15 +2,16 @@
 
 | | |
 |---|---|
+| Type | <demo, friction log, tutorial or release clip> |
 | Slug | `<slug>` |
 | Product | <which app> |
 | Runs on | local, staging |
-| Planned length | <sum> s of 300 |
+| Planned length | <sum> s of <the type's cap> |
 | Last recorded | never |
 
 ## Goal
 
-<One sentence: what the user is trying to get done.>
+<One sentence: what the user gets done, or, for a release clip, what changed.>
 
 ## Personas
 
@@ -35,7 +36,7 @@ not run). Shared facts are in `../README.md` under "Environments".
 
 - `APP_URL`: <staging URL>
 - Sign-in: real sign-in, before recording starts.
-- Tag for anything created: `fl-<date>`.
+- Tag for anything created: `vid-<date>`.
 - Hide in the edit: <emails, other customers' names, tokens>.
 - Cleanup after recording: <what to delete, and where>.
 
@@ -55,14 +56,15 @@ not run). Shared facts are in `../README.md` under "Environments".
 | 4 | Sam | <title> | <one action> | <what is on screen> | 45 |
 | 5 | Sam | <title> | <one action> | <what is on screen> | 40 |
 | | | Handoff card: Dana | | | 2 |
-| 6 | Dana | Verdict | Names the top three frictions | | 25 |
+| 6 | Dana | <Close, Verdict or Recap, by type> | <closing line; three frictions; the steps> | | 25 |
 | 7 | | End card | | | 4 |
 | | | **Total** | | | **210** |
 
-## Friction expected
+## Watch for
 
-<What the dry run found, so the person knows where to slow down and react.
-Leave empty if nobody has walked it yet.>
+<What the dry run found: where it is slow, where it breaks, what data it
+needs. A friction log slows down and reacts here; the other types make sure
+it passes before recording. Leave empty if nobody has walked it yet.>
 
 ## Out of scope
 
