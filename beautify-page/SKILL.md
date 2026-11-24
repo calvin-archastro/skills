@@ -5,7 +5,9 @@ description: >
   and anti-AI-slop craft. Use when the user wants a beautiful landing page, marketing
   homepage, hero polish, premium UI, motion graphics on a page, anti-slop redesign, or
   runs /beautify-page. Triggers: beautify this page, make it feel premium, landing page
-  that doesn't look AI, motion on the hero, polish marketing UI, distinctive frontend.
+  that doesn't look AI, motion on the hero, polish marketing UI, distinctive frontend,
+  design critique or adversarial design review of a marketing page, share/OG images
+  for marketing pages.
 ---
 
 # Beautify Page
@@ -93,7 +95,8 @@ Full paste block for system injection: [references/aesthetics-prompt.md](referen
 
 ### Typography
 
-- Pair display + body for *this* product  
+- Pair display + body for *this* product. A brand or design system that already names
+  its typefaces wins over pairing: use what it specifies, even if that is one family  
 - Extremes beat mild: weight 100–200 vs 800–900; size jumps ~3× not 1.5×  
 - Never default to Inter / Roboto / Arial / system-ui / Open Sans / Lato  
 
@@ -108,6 +111,11 @@ Full paste block for system injection: [references/aesthetics-prompt.md](referen
 - Don't center everything  
 - Don't force three identical feature cards  
 - Structural devices (eyebrows, dividers, numbers) only if they encode real content structure  
+- One navigation, one primary button in the header, one path to each destination. Two
+  navs, a header that repeats the hero, or two buttons that go to the same place are
+  the first things a reader calls redundant  
+- Show, don't write: when a section reads as "too much writing", move the point into a
+  figure or product shot and keep the words as its caption  
 - Match complexity to vision: maximalism needs craft; minimalism needs precision  
 
 ### Copy is design material
@@ -115,6 +123,11 @@ Full paste block for system injection: [references/aesthetics-prompt.md](referen
 **Ban:** empower, seamless, one-stop, unlock potential, disrupt, revolutionize, next-generation, streamline, elevate your workflow, Lorem ipsum, fake social proof.
 
 Write concrete product language. One primary CTA on landings. Active voice. Sentence case.
+
+Copy that reads as AI-written sinks the page however good the visuals are. Run every
+headline, subhead and button through whatever copy or anti-slop skill is installed
+(`copywriting`, `stop-slop`) before showing the page. Claim only what the product does
+today, and show only screens that can really occur.
 
 ---
 
@@ -167,6 +180,25 @@ Implement with real stack in repo (or self-contained HTML if greenfield). Derive
 3. Fix foundations before motion  
 4. Add or tighten **one** signature + load orchestration  
 5. Second pass: **not-generic critique** (implement fixes)
+6. For a page that matters, run the **multi-lens critique** below before shipping
+
+### Multi-lens critique (fresh reviewers, one lens each)
+
+Render the page first and give each reviewer screenshots at 375 and 1280 px wide, not
+only the source. Reviewers that read source alone miss what the page looks like. One
+fresh subagent per lens, each returning at most 12 findings, each finding with its
+replacement:
+
+| Lens | Asks |
+|---|---|
+| Identity | Could this page belong to any other product? What is generic? |
+| Hierarchy, type and copy | Is the order of attention right? Which words are filler? |
+| Product truth | Does any screen show a state that cannot happen? Does any claim describe a feature that does not exist? |
+| Trust | What would make a skeptical buyer leave: fake proof, vague numbers, missing basics? |
+| States and mobile | Empty, loading, error, long text, narrow width, no JavaScript |
+
+Truth and trust findings are blockers; the rest are ranked. Fix, re-render, and re-run
+the lenses that had blockers.
 
 ### Not-generic second pass (always for Polish; after first Build draft)
 
@@ -196,7 +228,13 @@ When the user needs a *prompt* for another tool (v0, Claude Design, Gemini):
 - [ ] One signature; rest quiet  
 - [ ] Motion: purpose + frequency justified; reduced-motion respected  
 - [ ] Copy concrete; banned fluff absent  
-- [ ] Responsive; visible focus; real images (not empty gray boxes / HTML doodles) when photos matter  
+- [ ] Responsive: checked at 375 and 1280 px, no sideways scroll, grid item counts divide by the column count  
+- [ ] Scroll-revealed content is visible with JavaScript off and with reduced motion  
+- [ ] Visible focus; real images (not empty gray boxes / HTML doodles) when photos matter  
+- [ ] One nav, one primary header button, no duplicate paths  
+- [ ] Every claim and screen is true of the product today  
+- [ ] Share cards: a per-page Open Graph and Twitter image that shows the page's punchline, on a content-hashed URL  
+- [ ] Deployed and checked: assets fingerprinted, the live URL loaded fresh and compared with the local build (a stale CDN copy is the usual reason the user "still sees the old page")  
 - [ ] Chanel: removed one accessory  
 
 If images needed and no assets exist, use a single `IMAGES` config with Unsplash CDN URLs (template in [references/prompts.md](references/prompts.md)).

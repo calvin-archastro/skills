@@ -153,6 +153,19 @@ Source: …  ·  Note: …  ·  data link if any
 Imitate the HTML skeleton in [prompts.md](references/prompts.md) — change
 tokens and marks, not the object model.
 
+### Words on and around a figure
+
+1. A caption, annotation or box label says what the thing **means or does**. It never says
+   where the thing sits ("the box on the left holds…") or restates what the eye already
+   sees. Test: cover the figure; if the label still tells the reader something, keep it.
+2. In a diagram, every box and arrow carries enough context to stand alone: what it is, and
+   why it matters to the claim. A bare component name is not a label.
+3. Lead each section with its figure. Prose is the caption: two sentences at most, placed
+   with the picture. When a page reads as "too much writing", the fix is to move the point
+   into the figure, not to trim the paragraphs.
+4. No slogans ("X is the Y", "X holds Y"). Run the page's words through whatever anti-slop
+   or voice skill is installed before showing it.
+
 ### Technical floor
 
 - One self-contained `.html` file (inlined CSS/JS/data). No build step
@@ -206,6 +219,7 @@ paragraphs, no brand names, append the constraint line.
 - [ ] Chart type matches the statement (not a pie-of-habit)
 - [ ] Token sheet followed; not costumes 1–5
 - [ ] Anatomy: title, dek, direct labels, annotation, source
+- [ ] Every label says what a thing means, not where it sits; figure first, prose ≤2 sentences
 - [ ] Sorted bars; 0-baseline on bars; no dual axis / 3D
 - [ ] Mobile readable; reduced-motion respected
 - [ ] Hover optional to the finding

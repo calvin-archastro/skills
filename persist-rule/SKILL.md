@@ -18,9 +18,19 @@ prior session, regressed silently later.
 1. **Recognize the trigger.** A second correction of the same class, an "always/never" from
    the user, or visible frustration at a repeat offense — treat all three as "this rule wants
    to be persisted", and propose it proactively; don't wait to be told.
+   - The repeat may have happened in another session. "I thought we fixed this" and "I
+     thought I told you" mean it did. Search recent sessions and merged PRs for the earlier
+     instance, then persist the rule this time.
+   - A recurring *request* counts too. If the user types the same instruction at the start
+     of the same kind of task every time ("use my voice skill when writing as me", "watch CI
+     after you push"), it belongs in the skill or the project instructions for that task.
 2. **Pick the most durable home that can hold it.** In descending order of preference:
    - **Lint rule / CI check** — for anything mechanically checkable (file size caps, banned
      APIs, no test-file edits, import layering). Strongest: self-enforcing forever.
+     Extend the linter the toolchain already runs (a clippy lint, an ESLint rule, a
+     credo check) so the command people already run finds it. Write a new standalone
+     script only when no existing linter can host the rule, and wire it to an automatic
+     caller (CI, a hook) in the same change; otherwise nothing runs it.
    - **Test** — for behavioral invariants ("a resource provisioned on behalf of a member is
      owned by that member").
    - **CLAUDE.md** (project or user level) — for judgment rules a machine can't check
@@ -32,6 +42,9 @@ prior session, regressed silently later.
      autonomous campaign; restate the amended block so it appears in every future iteration.
 3. **Implement it now**, in the same turn as the fix it accompanies — a rule proposed but not
    written is a memory, not an artifact.
+   - Prove the check bites: show it failing on the offending code and passing on the fix.
+   - A check that only tests format or ritual, and blocks work without catching the
+     behavior, is worse than no check. Tie the rule to the failure it prevents.
 4. **Audit backwards when the rule invalidates prior work.** When a rule is born from a
    systematic mistake, sweep what already shipped under the old behavior (one new ban
    required re-auditing every PR an autonomous loop had produced). Offer this explicitly.
