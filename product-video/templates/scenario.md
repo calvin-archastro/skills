@@ -49,7 +49,7 @@ not run). Shared facts are in `../README.md` under "Environments".
 | # | Persona | Beat | The user does | Done when | Seconds |
 |---|---|---|---|---|---|
 | 0 | | Intro | (pre-roll) | | 5 |
-| 1 | Dana | Hook | Says who they are and what they want | | 12 |
+| 1 | Dana | Hook | Says who they are, what the product is, the scenario (sample app and the change wanted), and what the video shows | | 30 |
 | 2 | Dana | <title> | <one action> | <what is on screen> | 35 |
 | 3 | Dana | <title> | <one action> | <what is on screen> | 40 |
 | | | Handoff card: Sam | | | 2 |
@@ -58,7 +58,16 @@ not run). Shared facts are in `../README.md` under "Environments".
 | | | Handoff card: Dana | | | 2 |
 | 6 | Dana | <Close, Verdict or Recap, by type> | <closing line; three frictions; the steps> | | 25 |
 | 7 | | End card | | | 4 |
-| | | **Total** | | | **210** |
+| | | **Total** | | | **228** |
+
+## Music and branding
+
+<Mood of the score for the hook, the journey and the ending, or "none".
+Branded intro and transitions: yes or no.>
+
+## Driver
+
+<Agent (default) or person drives the screen take.>
 
 ## Watch for
 

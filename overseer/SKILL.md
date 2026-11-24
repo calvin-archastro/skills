@@ -275,7 +275,12 @@ a one-off session for it (section 4) and close it when the job is done.
 
 1. Independent issues (a flake the change did not cause, a separate bug, a
    separate CI-speed fix): one subagent, one worktree, one branch off the remote
-   default branch, one PR each, so the owning session stays free.
+   default branch, one PR each, so the owning session stays free. When a plan
+   has two or more independent fixes, fan out subagents without asking and say
+   so in one line. Fanning out covers the work, not the publishing: each
+   subagent opens its PR only if the user already approved opening PRs for
+   this work. Otherwise it stops at a pushed branch and the branch goes
+   under "needs you".
 2. Work that belongs to an existing PR stays on that PR's branch: its own CI
    failures, its review comments, its conflicts. Send those to the owning
    session, or to a subagent in a worktree checked out at that PR's head. One
@@ -305,6 +310,10 @@ a one-off session for it (section 4) and close it when the job is done.
    wrong. Stop patching, name the ownership or layering fault, bring options.
 9. Cap concurrency: about four code agents at once, fewer when they compile.
    Give each its own build directory and database name on a shared machine.
+   Check free disk before a fan-out that builds, and have each agent delete
+   the build output it created itself once its PR is up (section 1's rule on
+   cleanup still governs branches, worktrees and anything it did not create). A fleet that fills the disk stalls
+   every session on the machine.
 10. The lead is the only one that pushes, changes PR state, and edits shared
    ledger files.
 11. A subagent that armed a monitor and stopped is not woken by notifications.
@@ -339,14 +348,25 @@ user's own review comments are orders.
 1. Result first. One screen. Numbered, so the user can answer "do 1 and 3,
    investigate 2". Keep ids stable across messages.
 2. Status shape: done, in flight, blocked, needs you. PR links, CI state, one
-   line per session.
+   line per session, eight lines or fewer for "where are we".
+   - Each item carries one proof: a PR link, a CI run, a deployed version, a
+     command's output. Merged, released, deployed and observed working are four
+     states; say which, and where you checked.
+   - Each in-flight item says when you expect it and what will wake you.
+   - Re-read every state before you report it. Do not repeat the last report's.
 3. "Needs you" is a short list of exact decisions, each with system state, the
-   problem and the tradeoff. Do not ask again for something already approved or
+   problem and the tradeoff. One question per line, numbered. Name the object
+   in plain words (a PR by number and title, not a bare id or an internal
+   label) and say what the user will see differently under each answer. If the
+   ask named an end state ("PR it when done", "get these out", "don't block on
+   me"), every in-scope step to reach it is already approved, and a command you
+   are allowed to run is never handed to the user to run. Do not ask again for something already approved or
    for a step inside the scope given. That never covers merge, live
    infrastructure, a new PR, or hard-to-reverse cleanup: those are asked for
    by name.
 4. Plain words. Tables for comparisons, a diagram when flow or ownership is the
-   point.
+   point. The first time an internal name appears in a report, add a three to
+   six word gloss.
 5. Anything long goes to a URL the user can open, with a summary on top. They
    do not read scratch files. Keep every such URL so you can hand it back.
 6. A question gets an answer and no edits.
